@@ -1,0 +1,22 @@
+server:
+  port: 8083
+
+spring:
+  data:
+    mongodb:
+      uri: ${MONGODB_URI:mongodb://pragma_user:pragma_pass@localhost:27017/pragma_trazabilidad?authSource=pragma_trazabilidad}
+      database: pragma_trazabilidad
+  # Deshabilitar autoconfiguración JPA/DataSource (no aplica a MongoDB)
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+      - org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration
+
+# JWT – misma clave secreta compartida con todos los microservicios
+security:
+  jwt:
+    secret: ${JWT_SECRET:pragma_super_secret_key_change_in_production}
+    expiration: 86400000   # 24 horas en ms
+
+appDescription: "Pragma Trazabilidad Microservice"
+appVersion: "1.0.0"
