@@ -1,0 +1,12 @@
+spring:
+  data:
+    mongodb:
+      database: pragma_trazabilidad_test
+  mongodb:
+    embedded:
+      version: 4.0.2
+
+security:
+  jwt:
+    secret: pragma_super_secret_key_change_in_production
+    expiration: 86400000

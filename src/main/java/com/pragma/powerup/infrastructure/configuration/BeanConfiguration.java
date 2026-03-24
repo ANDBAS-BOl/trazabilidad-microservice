@@ -1,8 +1,10 @@
 package com.pragma.powerup.infrastructure.configuration;
 
-import com.pragma.powerup.domain.api.IObjectServicePort;
-import com.pragma.powerup.domain.spi.IObjectPersistencePort;
-import com.pragma.powerup.domain.usecase.ObjectUseCase;
+import com.pragma.powerup.domain.api.IOrderTraceServicePort;
+import com.pragma.powerup.domain.spi.IOrderTracePersistencePort;
+import com.pragma.powerup.domain.usecase.OrderTraceUseCase;
+import com.pragma.powerup.infrastructure.out.mongo.adapter.OrderTraceMongoAdapter;
+import com.pragma.powerup.infrastructure.out.mongo.repository.IOrderTraceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,13 +13,15 @@ import org.springframework.context.annotation.Configuration;
 @RequiredArgsConstructor
 public class BeanConfiguration {
 
+    private final IOrderTraceRepository orderTraceRepository;
+
     @Bean
-    public IObjectPersistencePort objectPersistencePort() {
-        return null;
+    public IOrderTracePersistencePort orderTracePersistencePort() {
+        return new OrderTraceMongoAdapter(orderTraceRepository);
     }
 
     @Bean
-    public IObjectServicePort objectServicePort() {
-        return new ObjectUseCase(objectPersistencePort());
+    public IOrderTraceServicePort orderTraceServicePort() {
+        return new OrderTraceUseCase(orderTracePersistencePort());
     }
 }
