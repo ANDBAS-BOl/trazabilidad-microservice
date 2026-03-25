@@ -33,7 +33,7 @@ public class OrderTraceRestController {
     private final IOrderTraceHandler orderTraceHandler;
 
     @Operation(summary = "Registrar evento de cambio de estado", security = @SecurityRequirement(name = "bearerAuth"))
-    @PreAuthorize("hasAnyRole('EMPLEADO','CLIENTE','PROPIETARIO','ADMINISTRADOR')")
+    @PreAuthorize("hasAnyRole('EMPLEADO','CLIENTE')")
     @PostMapping("/eventos")
     public ResponseEntity<Void> registrarEvento(@Valid @RequestBody CreateOrderTraceRequestDto requestDto) {
         orderTraceHandler.registrarEvento(requestDto);

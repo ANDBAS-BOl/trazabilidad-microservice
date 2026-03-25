@@ -1,0 +1,18 @@
+version: "3.8"
+
+services:
+  trazabilidad:
+    container_name: pragma-trazabilidad
+    build: .
+    ports:
+      - "8083:8083"
+    environment:
+      JWT_SECRET: pragma_super_secret_key_change_in_production
+      MONGODB_URI: mongodb://pragma_user:pragma_pass@pragma-mongodb:27017/pragma_trazabilidad?authSource=pragma_trazabilidad
+    networks:
+      - pragma-net
+
+networks:
+  pragma-net:
+    external: true
+
