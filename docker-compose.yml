@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   trazabilidad:
     container_name: pragma-trazabilidad
