@@ -1,7 +1,11 @@
 services:
   trazabilidad:
     container_name: pragma-trazabilidad
-    build: .
+    image: pragma-trazabilidad:0.0.1-SNAPSHOT
+    build:
+      context: .
+      args:
+        APP_VERSION: "0.0.1-SNAPSHOT"
     ports:
       - "8083:8083"
     environment:

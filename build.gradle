@@ -5,7 +5,7 @@ plugins {
 	id 'jacoco'
 }
 
-group = 'com.pragma.powerup'
+group = 'com.pragma.powerup.trazabilidad'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '17'
 
@@ -49,12 +49,88 @@ dependencies {
 	annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 
 	implementation "org.springdoc:springdoc-openapi-ui:${openApiVersion}"
+
+	testImplementation "com.tngtech.archunit:archunit-junit5:1.1.0"
+	testImplementation "org.springframework.security:spring-security-test"
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
+	finalizedBy jacocoTestReport
+	testLogging {
+		events "passed", "skipped", "failed"
+		exceptionFormat "full"
+	}
 }
 
-test {
-	finalizedBy jacocoTestReport
+jacoco {
+	toolVersion = "0.8.9"
 }
+
+def jacocoExclusions = [
+		'**/TrazabilidadApplication.*',
+		'**/infrastructure/configuration/**',
+		'**/infrastructure/exceptionhandler/**',
+		'**/infrastructure/security/**',
+		'**/application/dto/**',
+		'**/infrastructure/out/mongo/document/**',
+		'**/domain/exception/**',
+		'**/*MapperImpl*'
+]
+
+jacocoTestReport {
+	dependsOn test
+	reports {
+		html.required = true
+		xml.required = true
+		csv.required = true
+		html.outputLocation = layout.buildDirectory.dir('reports/jacoco/html')
+		xml.outputLocation = layout.buildDirectory.file('reports/jacoco/jacoco.xml')
+		csv.outputLocation = layout.buildDirectory.file('reports/jacoco/jacoco.csv')
+	}
+	classDirectories.setFrom(
+			files(classDirectories.files.collect {
+				fileTree(dir: it, exclude: jacocoExclusions)
+			})
+	)
+}
+
+jacocoTestCoverageVerification {
+	dependsOn test
+	classDirectories.setFrom(
+			files(classDirectories.files.collect {
+				fileTree(dir: it, exclude: jacocoExclusions)
+			})
+	)
+	violationRules {
+		rule {
+			element = 'BUNDLE'
+			limit {
+				counter = 'INSTRUCTION'
+				value = 'COVEREDRATIO'
+				minimum = 0.75
+			}
+			limit {
+				counter = 'BRANCH'
+				value = 'COVEREDRATIO'
+				minimum = 0.65
+			}
+		}
+		rule {
+			element = 'PACKAGE'
+			includes = ['com.pragma.powerup.trazabilidad.domain.usecase']
+			limit {
+				counter = 'INSTRUCTION'
+				value = 'COVEREDRATIO'
+				minimum = 0.90
+			}
+			limit {
+				counter = 'BRANCH'
+				value = 'COVEREDRATIO'
+				minimum = 0.85
+			}
+		}
+	}
+}
+
+check.dependsOn jacocoTestCoverageVerification

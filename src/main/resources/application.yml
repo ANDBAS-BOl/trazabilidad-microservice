@@ -17,6 +17,3 @@ security:
   jwt:
     secret: ${JWT_SECRET:pragma_super_secret_key_change_in_production}
     expiration: 86400000   # 24 horas en ms
-
-appDescription: "Pragma Trazabilidad Microservice"
-appVersion: "1.0.0"
